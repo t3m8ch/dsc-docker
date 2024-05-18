@@ -1,0 +1,21 @@
+services:
+  backend:
+    build: .
+    ports: 
+      - "8000:8000"
+    environment:
+      - DB_URL=postgresql://${DB_USER}@db/${DB_NAME}
+
+  db:
+    image: postgres:16.3-alpine
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+    healthcheck:
+      test: "pg_isready --username=${DB_USER} --database=${DB_NAME}"
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
